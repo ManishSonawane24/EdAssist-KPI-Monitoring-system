@@ -1,0 +1,5 @@
+{
+  "name": "EdAssist Analytics Dashboard",
+  "description": "A comprehensive KPI monitoring dashboard for EdAssist using GA4 data and Business Metrics.",
+  "requestFramePermissions": []
+}

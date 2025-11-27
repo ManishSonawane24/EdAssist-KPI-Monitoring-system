@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { fetchDashboardData } from '../services/dataService';
-import { DashboardData } from '../types';
+import { DashboardData, KPIMetric } from '../types';
 import { MetricCard } from '../components/MetricCard';
 import { SectionHeader } from '../components/SectionHeader';
 import { BarChart, Bar, XAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const COLORS = ['#0ea5e9', '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e'];
 
@@ -14,6 +17,10 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+  const [exportingFormat, setExportingFormat] = useState<'xlsx' | 'csv' | 'pdf' | null>(null);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const exportMenuRef = useRef<HTMLDivElement | null>(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -34,6 +41,17 @@ export default function DashboardPage() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (!exportMenuOpen) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(event.target as Node)) {
+        setExportMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [exportMenuOpen]);
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDateRange({ ...dateRange, [e.target.name]: e.target.value });
   };
@@ -41,6 +59,234 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     await logout();
     navigate('/login');
+  };
+
+  const toggleExportMenu = () => {
+    if (!data || loading || exportingFormat) return;
+    setExportError(null);
+    setExportMenuOpen((prev) => !prev);
+  };
+
+  const sanitizeSheetName = (name: string) => {
+    const cleaned = name.replace(/[\\/?*:|\[\]]/g, '').trim();
+    return cleaned.substring(0, 31) || 'Sheet';
+  };
+
+  const formatExportValue = (value: number | string) => {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'number') {
+      return Number.isInteger(value) ? value : Number(value.toFixed(2));
+    }
+    return value;
+  };
+
+  type UnifiedRow = {
+    Section: string;
+    Metric: string;
+    Today: string | number;
+    MTD: string | number;
+    YTD: string | number;
+    Notes: string | number;
+  };
+
+  const buildReportArtifacts = (dashboard: DashboardData) => {
+    const workbook = XLSX.utils.book_new();
+    const unifiedRows: UnifiedRow[] = [];
+
+    const sectionConfigs: Array<{ title: string; metrics: KPIMetric[] }> = [
+      { title: 'Growth Funnel', metrics: dashboard.growthFunnel },
+      { title: 'Business Metrics', metrics: dashboard.businessMetrics },
+      { title: 'Job Portal Metrics', metrics: dashboard.jobPortalMetrics },
+      { title: 'Candidate Metrics', metrics: dashboard.candidateMetrics },
+      { title: 'Employer Metrics', metrics: dashboard.employerMetrics },
+      { title: 'Website Performance', metrics: dashboard.websitePerformance },
+    ];
+
+    sectionConfigs.forEach((section) => {
+      if (!section.metrics?.length) return;
+      const rows = section.metrics.map((metric) => {
+        const formatted = {
+          Section: section.title,
+          Metric: metric.label,
+          Today: formatExportValue(metric.today),
+          MTD: formatExportValue(metric.mtd),
+          YTD: formatExportValue(metric.ytd),
+          Notes: metric.notes || '',
+        };
+        unifiedRows.push(formatted);
+        return {
+          Metric: metric.label,
+          Today: formatted.Today,
+          MTD: formatted.MTD,
+          YTD: formatted.YTD,
+          Notes: formatted.Notes,
+        };
+      });
+      const worksheet = XLSX.utils.json_to_sheet(rows);
+      XLSX.utils.book_append_sheet(workbook, worksheet, sanitizeSheetName(section.title));
+    });
+
+    if (dashboard.trafficSources?.length) {
+      dashboard.trafficSources.forEach((source) => {
+        unifiedRows.push({
+          Section: 'Traffic Sources',
+          Metric: source.name,
+          Today: source.value,
+          MTD: '',
+          YTD: '',
+          Notes: '',
+        });
+      });
+      const worksheet = XLSX.utils.json_to_sheet(
+        dashboard.trafficSources.map((source) => ({
+          Source: source.name,
+          Sessions: source.value,
+        }))
+      );
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Traffic Sources');
+    }
+
+    if (dashboard.topPages?.length) {
+      dashboard.topPages.forEach((page) => {
+        unifiedRows.push({
+          Section: 'Top Pages',
+          Metric: page.pageName,
+          Today: page.views,
+          MTD: '',
+          YTD: '',
+          Notes: '',
+        });
+      });
+      const worksheet = XLSX.utils.json_to_sheet(
+        dashboard.topPages.map((page) => ({
+          Page: page.pageName,
+          Views: page.views,
+        }))
+      );
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Top Pages');
+    }
+
+    if (dashboard.topJobPages?.length) {
+      dashboard.topJobPages.forEach((page) => {
+        unifiedRows.push({
+          Section: 'Top Job Pages',
+          Metric: page.pageName,
+          Today: page.views,
+          MTD: '',
+          YTD: '',
+          Notes: '',
+        });
+      });
+      const worksheet = XLSX.utils.json_to_sheet(
+        dashboard.topJobPages.map((page) => ({
+          Page: page.pageName,
+          Views: page.views,
+        }))
+      );
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Top Job Pages');
+    }
+
+    if (dashboard.pageViewsByCategory?.length) {
+      dashboard.pageViewsByCategory.forEach((entry) => {
+        unifiedRows.push({
+          Section: 'Page Categories',
+          Metric: entry.name,
+          Today: entry.val,
+          MTD: '',
+          YTD: '',
+          Notes: '',
+        });
+      });
+      const worksheet = XLSX.utils.json_to_sheet(
+        dashboard.pageViewsByCategory.map((entry) => ({
+          Category: entry.name,
+          Views: entry.val,
+        }))
+      );
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Page Categories');
+    }
+
+    if (!unifiedRows.length) {
+      unifiedRows.push({
+        Section: 'Info',
+        Metric: 'No data available',
+        Today: '',
+        MTD: '',
+        YTD: '',
+        Notes: '',
+      });
+    }
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(unifiedRows), 'All Metrics');
+
+    const overviewRows = [
+      { Metric: 'Report Generated At', Value: new Date().toLocaleString() },
+      { Metric: 'Start Date Filter', Value: dateRange.start || 'Not Applied' },
+      { Metric: 'End Date Filter', Value: dateRange.end || 'Not Applied' },
+      {
+        Metric: 'Total KPI Metrics',
+        Value: sectionConfigs.reduce((sum, section) => sum + (section.metrics?.length || 0), 0),
+      },
+    ];
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(overviewRows), 'Overview');
+
+    return { workbook, unifiedRows };
+  };
+
+  const handleExportReport = async (format: 'xlsx' | 'csv' | 'pdf') => {
+    if (!data) return;
+    try {
+      setExportMenuOpen(false);
+      setExportError(null);
+      setExportingFormat(format);
+      const { workbook, unifiedRows } = buildReportArtifacts(data);
+      const baseFilename = `EdAssist_Report_${new Date().toISOString().slice(0, 10)}`;
+
+      if (format === 'xlsx') {
+        await XLSX.writeFileXLSX(workbook, `${baseFilename}.xlsx`, { compression: true });
+      } else if (format === 'csv') {
+        const sheet = workbook.Sheets['All Metrics'] || workbook.Sheets[workbook.SheetNames[0]];
+        const csvContent = sheet ? XLSX.utils.sheet_to_csv(sheet) : '';
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${baseFilename}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } else {
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+        doc.setFontSize(16);
+        doc.text('EdAssist Analytics Report', 40, 40);
+        doc.setFontSize(10);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 40, 58);
+        doc.text(`Filters: ${dateRange.start || 'Beginning'} → ${dateRange.end || 'Today'}`, 40, 72);
+
+        autoTable(doc, {
+          startY: 90,
+          head: [['Section', 'Metric', 'Today', 'MTD', 'YTD', 'Notes']],
+          body: unifiedRows.map((row) => [
+            row.Section,
+            row.Metric,
+            row.Today ?? '',
+            row.MTD ?? '',
+            row.YTD ?? '',
+            row.Notes ?? '',
+          ]),
+          styles: { fontSize: 8, cellPadding: 3 },
+          headStyles: { fillColor: [79, 70, 229], textColor: 255 },
+        });
+
+        doc.save(`${baseFilename}.pdf`);
+      }
+      setExportMenuOpen(false);
+    } catch (error) {
+      console.error('Failed to export report', error);
+      setExportError('Failed to generate the report. Please try again.');
+    } finally {
+      setExportingFormat(null);
+    }
   };
 
   const isCustomDate = dateRange.start || dateRange.end;
@@ -117,7 +363,53 @@ export default function DashboardPage() {
                  </span>
                )}
              </button>
+
+            <div className="relative" ref={exportMenuRef}>
+              <button
+                onClick={toggleExportMenu}
+                disabled={!data || loading || !!exportingFormat}
+                className="px-4 py-2 border border-indigo-100 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {exportingFormat ? (
+                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 4v12m0 0l3-3m-3 3l-3-3m-3 7h12a2 2 0 002-2v-4" />
+                  </svg>
+                )}
+                <span>Export Report</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transition-transform ${exportMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {exportMenuOpen && (
+                <div className="absolute right-0 mt-2 w-44 rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden z-10">
+                  {[
+                    { label: 'Export as PDF', format: 'pdf', description: 'Printable summary' },
+                    { label: 'Export as XLSX', format: 'xlsx', description: 'Full workbook' },
+                    { label: 'Export as CSV', format: 'csv', description: 'All metrics table' },
+                  ].map((option) => (
+                    <button
+                      key={option.format}
+                      onClick={() => handleExportReport(option.format as 'pdf' | 'xlsx' | 'csv')}
+                      className="w-full text-left px-4 py-3 hover:bg-slate-50 text-sm text-slate-700 flex flex-col"
+                    >
+                      <span className="font-semibold">{option.label}</span>
+                      <span className="text-xs text-slate-400">{option.description}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+
+          {exportError && (
+            <p className="text-xs text-red-500 mt-2 text-right">{exportError}</p>
+          )}
 
           <div className="flex items-center gap-3">
             <div className="text-right">

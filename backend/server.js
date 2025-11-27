@@ -9,6 +9,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
+const { google } = require('googleapis');
 const passport = require('./config/passport');
 const connectDB = require('./config/db');
 
@@ -297,6 +298,57 @@ async function getAdditionalMetrics(startDate, endDate) {
   }
 }
 
+/**
+ * Helper: Fetch Google Search Console Metrics (Clicks, Impressions, CTR)
+ */
+async function getGSCMetrics(startDate, endDate) {
+  try {
+    const siteUrl = process.env.GSC_SITE_URL || 'sc-domain:edassist.co.in';
+    
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined,
+      },
+      scopes: ['https://www.googleapis.com/auth/webmasters.readonly'],
+    });
+    
+    const authClient = await auth.getClient();
+    const searchconsole = google.searchconsole({ version: 'v1', auth: authClient });
+    
+    const response = await searchconsole.searchanalytics.query({
+      siteUrl: siteUrl,
+      requestBody: {
+        startDate: startDate,
+        endDate: endDate,
+        dimensions: [], // No dimensions - just aggregate totals
+        rowLimit: 1,
+      },
+    });
+
+    if (response.data.rows && response.data.rows.length > 0) {
+      const row = response.data.rows[0];
+      const clicks = parseInt(row.clicks) || 0;
+      const impressions = parseInt(row.impressions) || 0;
+      const ctr = row.ctr ? parseFloat(row.ctr) * 100 : 0; // Convert to percentage
+      
+      return {
+        clicks,
+        impressions,
+        ctr,
+      };
+    }
+    
+    return { clicks: 0, impressions: 0, ctr: 0 };
+  } catch (error) {
+    console.error(`Error fetching GSC data (${startDate} to ${endDate}):`, error.message);
+    if (error.response) {
+      console.error('GSC API Error details:', error.response.data);
+    }
+    return null;
+  }
+}
+
 // --- AUTH ROUTES ---
 app.use('/api/auth', require('./routes/authRoutes'));
 
@@ -328,7 +380,10 @@ app.get('/api/dashboard-data', async (req, res) => {
       pageViewsByCategory,
       todayAdditional,
       mtdAdditional,
-      ytdAdditional
+      ytdAdditional,
+      todayGSC,
+      mtdGSC,
+      ytdGSC
     ] = await Promise.all([
       getGA4Metrics(selectedStart, selectedEnd),
       getGA4Metrics(mtdStart, endStr),
@@ -339,7 +394,10 @@ app.get('/api/dashboard-data', async (req, res) => {
       getPageViewsByCategory(!startDate ? mtdStart : selectedStart, selectedEnd),
       getAdditionalMetrics(selectedStart, selectedEnd),
       getAdditionalMetrics(mtdStart, endStr),
-      getAdditionalMetrics(ytdStart, endStr)
+      getAdditionalMetrics(ytdStart, endStr),
+      getGSCMetrics(selectedStart, selectedEnd),
+      getGSCMetrics(mtdStart, endStr),
+      getGSCMetrics(ytdStart, endStr)
     ]);
 
     // 2. Aggregate Data
@@ -393,9 +451,24 @@ app.get('/api/dashboard-data', async (req, res) => {
         { label: 'Jobs per Employer', today: '---', mtd: 3, ytd: 4.5 },
       ],
       websitePerformance: [
-        { label: 'Total Clicks (GSC)', today: '---', mtd: '---', ytd: '---', notes: 'Requires GSC API' },
-        { label: 'Impressions (GSC)', today: '---', mtd: '---', ytd: '---', notes: 'Requires GSC API' },
-        { label: 'CTR %', today: '---', mtd: '---', ytd: '---', notes: 'Requires GSC API' },
+        { 
+          label: 'Total Clicks (GSC)', 
+          today: todayGSC?.clicks || 0, 
+          mtd: mtdGSC?.clicks || 0, 
+          ytd: ytdGSC?.clicks || 0 
+        },
+        { 
+          label: 'Impressions (GSC)', 
+          today: todayGSC?.impressions || 0, 
+          mtd: mtdGSC?.impressions || 0, 
+          ytd: ytdGSC?.impressions || 0 
+        },
+        { 
+          label: 'CTR %', 
+          today: todayGSC?.ctr ? `${todayGSC.ctr.toFixed(2)}%` : '0%', 
+          mtd: mtdGSC?.ctr ? `${mtdGSC.ctr.toFixed(2)}%` : '0%', 
+          ytd: ytdGSC?.ctr ? `${ytdGSC.ctr.toFixed(2)}%` : '0%' 
+        },
         { label: 'Total Users', today: todayData?.activeUsers || 0, mtd: mtdData?.activeUsers || 0, ytd: ytdData?.activeUsers || 0 },
         { label: 'Sessions', today: todayData?.sessions || 0, mtd: mtdData?.sessions || 0, ytd: ytdData?.sessions || 0 },
         { label: 'New Users', today: todayAdditional?.newUsers || 0, mtd: mtdAdditional?.newUsers || 0, ytd: ytdAdditional?.newUsers || 0 },

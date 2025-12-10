@@ -3,6 +3,7 @@ import { fetchDashboardData } from '../services/dataService';
 import { DashboardData, KPIMetric } from '../types';
 import { MetricCard } from '../components/MetricCard';
 import { SectionHeader } from '../components/SectionHeader';
+import Logo from '../components/Logo';
 import { BarChart, Bar, XAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -294,37 +295,36 @@ export default function DashboardPage() {
 
   if (loading && !data) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900">
         <div className="w-16 h-16 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin mb-4"></div>
-        <p className="text-slate-500 font-medium animate-pulse">Gathering Intelligence...</p>
+        <p className="text-slate-500 dark:text-slate-300 font-medium animate-pulse">Gathering Intelligence...</p>
       </div>
     );
   }
 
   if (!data && !loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-red-100 max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-red-100 dark:border-red-200 max-w-md">
         <div className="text-red-500 text-5xl mb-4">⚠️</div>
-        <h2 className="text-xl font-bold text-slate-800 mb-2">Failed to Load Data</h2>
-        <p className="text-slate-500 mb-6">Please ensure the backend server is running.</p>
+        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Failed to Load Data</h2>
+        <p className="text-slate-500 dark:text-slate-300 mb-6">Please ensure the backend server is running.</p>
         <button onClick={loadData} className="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition">Try Again</button>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-24">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans pb-24">
+      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-auto py-4 md:h-20 md:py-0 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 self-start md:self-auto">
-            <div className="bg-gradient-to-tr from-brand-600 to-brand-400 text-white p-2 rounded-xl shadow-lg shadow-brand-200">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
+            {/* Logo component handles dark/light variants and uses currentColor for inline SVG */}
+            <div className="bg-gradient-to-tr from-brand-600 to-brand-400 text-white p-2 rounded-xl shadow-lg shadow-brand-200 dark:from-slate-700 dark:to-slate-600">
+              <Logo bare className="text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-800 tracking-tight">EdAssist <span className="text-brand-600">Analytics</span></h1>
-              <p className="text-xs text-slate-400 font-medium">KPI Monitoring System</p>
+              <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">EdAssist <span className="text-brand-600">Analytics</span></h1>
+              <p className="text-xs text-slate-400 dark:text-slate-300 font-medium">KPI Monitoring System</p>
             </div>
             <button
               onClick={() => navigate('/charts')}
@@ -335,21 +335,21 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-            <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-lg border border-slate-200">
+            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
               <input
                 type="date"
                 name="start"
                 value={dateRange.start}
                 onChange={handleDateChange}
-                className="bg-white text-xs text-slate-600 px-3 py-1.5 rounded-md border border-slate-200 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400"
+                className="bg-white dark:bg-slate-700 text-xs text-slate-600 dark:text-slate-100 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400"
               />
-              <span className="text-slate-400 text-xs">to</span>
+              <span className="text-slate-400 dark:text-slate-300 text-xs">to</span>
               <input
                 type="date"
                 name="end"
                 value={dateRange.end}
                 onChange={handleDateChange}
-                className="bg-white text-xs text-slate-600 px-3 py-1.5 rounded-md border border-slate-200 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400"
+                className="bg-white dark:bg-slate-700 text-xs text-slate-600 dark:text-slate-100 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400"
               />
             </div>
 
@@ -393,7 +393,7 @@ export default function DashboardPage() {
               </button>
 
               {exportMenuOpen && (
-                <div className="absolute right-0 mt-2 w-44 rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden z-10">
+                <div className="absolute right-0 mt-2 w-44 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg overflow-hidden z-10">
                   {[
                     { label: 'Export as PDF', format: 'pdf', description: 'Printable summary' },
                     { label: 'Export as XLSX', format: 'xlsx', description: 'Full workbook' },
@@ -402,10 +402,10 @@ export default function DashboardPage() {
                     <button
                       key={option.format}
                       onClick={() => handleExportReport(option.format as 'pdf' | 'xlsx' | 'csv')}
-                      className="w-full text-left px-4 py-3 hover:bg-slate-50 text-sm text-slate-700 flex flex-col"
+                      className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-100 flex flex-col"
                     >
                       <span className="font-semibold">{option.label}</span>
-                      <span className="text-xs text-slate-400">{option.description}</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-300">{option.description}</span>
                     </button>
                   ))}
                 </div>
@@ -419,13 +419,13 @@ export default function DashboardPage() {
 
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <p className="text-sm font-semibold text-slate-700">{user?.name}</p>
-              <p className="text-xs text-slate-400">{user?.email}</p>
-              <p className="text-[11px] text-slate-400 mt-1">Last sync {lastRefreshed.toLocaleTimeString()}</p>
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-100">{user?.name}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-300">{user?.email}</p>
+              <p className="text-[11px] text-slate-400 dark:text-slate-300 mt-1">Last sync {lastRefreshed.toLocaleTimeString()}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 text-sm font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 transition"
+              className="px-4 py-2 text-sm font-semibold border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
             >
               Logout
             </button>
@@ -476,30 +476,30 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="space-y-6">
-                  <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+                  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
                     <h3 className="text-base font-bold text-slate-800 mb-6 flex items-center gap-2">
                       Top 5 Job Pages
                     </h3>
                     <div className="space-y-4">
                       {data.topJobPages && data.topJobPages.length > 0 ? (
                         data.topJobPages.map((page, i) => (
-                          <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-violet-50 hover:bg-white hover:shadow-sm border border-transparent hover:border-violet-100 transition-all cursor-default">
+                          <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-violet-50 hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm border border-transparent hover:border-violet-100 transition-all cursor-default">
                             <div className="flex items-center gap-3 overflow-hidden">
                               <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold bg-violet-200 text-violet-700`}>
                                 {i + 1}
                               </span>
-                              <span className="text-sm font-medium text-slate-700 truncate" title={page.pageName}>{page.pageName}</span>
+                              <span className="text-sm font-medium text-slate-700 dark:text-slate-100 truncate" title={page.pageName}>{page.pageName}</span>
                             </div>
-                            <span className="text-sm font-bold text-slate-800">{page.views.toLocaleString()} <span className="text-[10px] font-normal text-slate-400">views</span></span>
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-100">{page.views.toLocaleString()} <span className="text-[10px] font-normal text-slate-400 dark:text-slate-300">views</span></span>
                           </div>
                         ))
                       ) : (
-                        <div className="text-slate-400 text-sm italic">No specific job page data found.</div>
+                        <div className="text-slate-400 dark:text-slate-300 text-sm italic">No specific job page data found.</div>
                       )}
                     </div>
                   </div>
 
-                  <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
                     <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-6 flex items-center gap-2">
                       Page Views by Category
                       {!isCustomDate && <span className="px-2 py-0.5 bg-violet-50 text-violet-600 text-[10px] rounded-full uppercase">GA4 Data</span>}
@@ -519,7 +519,7 @@ export default function DashboardPage() {
                           </BarChart>
                         </ResponsiveContainer>
                       ) : (
-                        <div className="h-full flex items-center justify-center text-slate-400 text-sm">No category data available</div>
+                        <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">No category data available</div>
                       )}
                     </div>
                   </div>
@@ -557,10 +557,10 @@ export default function DashboardPage() {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
                   <h3 className="text-base font-bold text-slate-800 mb-6 flex items-center gap-2">
                     Traffic Sources
-                    {isCustomDate && <span className="text-[10px] text-slate-400 font-normal ml-auto">Selected Range</span>}
+                    {isCustomDate && <span className="text-[10px] text-slate-400 dark:text-slate-300 font-normal ml-auto">Selected Range</span>}
                     {!isCustomDate && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] rounded-full uppercase">Real Data</span>}
                   </h3>
                   <div className="h-64 w-full">
@@ -588,15 +588,15 @@ export default function DashboardPage() {
                         </PieChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="h-full flex items-center justify-center text-slate-400 text-sm">No traffic data available</div>
+                      <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">No traffic data available</div>
                     )}
                   </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
                   <h3 className="text-base font-bold text-slate-800 mb-6 flex items-center gap-2">
                     Top 5 Website Pages
-                    {isCustomDate && <span className="text-[10px] text-slate-400 font-normal ml-auto">Selected Range</span>}
+                    {isCustomDate && <span className="text-[10px] text-slate-400 dark:text-slate-300 font-normal ml-auto">Selected Range</span>}
                     {!isCustomDate && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] rounded-full uppercase">Real Data</span>}
                   </h3>
                   <div className="space-y-4">
@@ -607,13 +607,13 @@ export default function DashboardPage() {
                             <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${i < 3 ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-600'}`}>
                               {i + 1}
                             </span>
-                            <span className="text-sm font-medium text-slate-700 truncate" title={page.pageName}>{page.pageName}</span>
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-100 truncate" title={page.pageName}>{page.pageName}</span>
                           </div>
                           <span className="text-sm font-bold text-slate-800">{page.views.toLocaleString()} <span className="text-[10px] font-normal text-slate-400">views</span></span>
                         </div>
                       ))
                     ) : (
-                      <div className="h-full flex items-center justify-center text-slate-400 text-sm">No page data available</div>
+                      <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">No page data available</div>
                     )}
                   </div>
                 </div>

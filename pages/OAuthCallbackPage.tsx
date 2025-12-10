@@ -27,9 +27,9 @@ export default function OAuthCallbackPage() {
   }, [navigate, params, setAuth]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900">
       <div className="w-14 h-14 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin mb-4"></div>
-      <p className="text-slate-500 text-sm">Completing secure sign-in...</p>
+      <p className="text-slate-500 dark:text-slate-300 text-sm">Completing secure sign-in...</p>
     </div>
   );
 }

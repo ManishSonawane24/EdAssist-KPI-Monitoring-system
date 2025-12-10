@@ -11,6 +11,7 @@ import {
     ConversionFunnelChart,
 } from '../components/charts';
 import { SectionHeader } from '../components/SectionHeader';
+import Logo from '../components/Logo';
 
 /**
  * ChartsPage - Comprehensive Chart.js visualization dashboard
@@ -175,28 +176,26 @@ export default function ChartsPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900">
                 <div className="w-16 h-16 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin mb-4"></div>
-                <p className="text-slate-500 font-medium animate-pulse">Loading Charts...</p>
+                <p className="text-slate-500 dark:text-slate-300 font-medium animate-pulse">Loading Charts...</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans pb-24">
-            <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans pb-24">
+            <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="bg-gradient-to-tr from-brand-600 to-brand-400 text-white p-2 rounded-xl shadow-lg shadow-brand-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
+                        <div className="bg-gradient-to-tr from-brand-600 to-brand-400 text-white p-2 rounded-xl shadow-lg shadow-brand-200 dark:from-slate-700 dark:to-slate-600">
+                            <Logo bare className="text-white" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+                            <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
                                 EdAssist <span className="text-brand-600">Charts</span>
                             </h1>
-                            <p className="text-xs text-slate-400 font-medium">Chart.js Visualizations</p>
+                            <p className="text-xs text-slate-400 dark:text-slate-300 font-medium">Chart.js Visualizations</p>
                         </div>
                         <button
                             onClick={() => navigate('/')}
@@ -208,8 +207,8 @@ export default function ChartsPage() {
 
                     <div className="flex items-center gap-3">
                         <div className="text-right">
-                            <p className="text-sm font-semibold text-slate-700">{user?.name}</p>
-                            <p className="text-xs text-slate-400">{user?.email}</p>
+                            <p className="text-sm font-semibold text-slate-700 dark:text-slate-100">{user?.name}</p>
+                            <p className="text-xs text-slate-400 dark:text-slate-300">{user?.email}</p>
                         </div>
                         <button
                             onClick={handleLogout}
@@ -225,7 +224,7 @@ export default function ChartsPage() {
                 {/* Traffic (GA) */}
                 <section className="animate-slideUp" style={{ animationDelay: '0ms' }}>
                     <SectionHeader title="Traffic Analytics (GA)" colorClass="bg-indigo-500" />
-                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                         <div className="h-80">
                             <TrafficLineChart data={trafficData} title="Weekly Traffic Overview" />
                         </div>
@@ -235,7 +234,7 @@ export default function ChartsPage() {
                 {/* Search Performance (GSC) */}
                 <section className="animate-slideUp" style={{ animationDelay: '100ms' }}>
                     <SectionHeader title="Search Performance (GSC)" colorClass="bg-emerald-500" />
-                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                         <div className="h-80">
                             <PerformanceBarChart data={searchPerformanceData} title="Monthly Search Metrics" />
                         </div>
@@ -245,7 +244,7 @@ export default function ChartsPage() {
                 {/* User Activity & Applicants */}
                 <section className="animate-slideUp" style={{ animationDelay: '200ms' }}>
                     <SectionHeader title="User Activity & Applicants" colorClass="bg-violet-500" />
-                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                         <div className="h-80">
                             <TrafficLineChart data={userActivityData} title="User Engagement Trends" />
                         </div>
@@ -255,7 +254,7 @@ export default function ChartsPage() {
                 {/* Campaign Performance */}
                 <section className="animate-slideUp" style={{ animationDelay: '300ms' }}>
                     <SectionHeader title="Campaign Performance" colorClass="bg-rose-500" />
-                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                         <div className="h-80">
                             <CampaignMultiLineChart data={campaignData} title="Multi-Channel Campaign Comparison" />
                         </div>
@@ -265,7 +264,7 @@ export default function ChartsPage() {
                 {/* CTR & Impressions */}
                 <section className="animate-slideUp" style={{ animationDelay: '400ms' }}>
                     <SectionHeader title="CTR & Impressions" colorClass="bg-orange-500" />
-                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                         <div className="h-80">
                             <CTRImpressionChart data={ctrImpressionData} title="Platform Performance Metrics" />
                         </div>
@@ -277,7 +276,7 @@ export default function ChartsPage() {
                     {/* Traffic Sources */}
                     <section className="animate-slideUp" style={{ animationDelay: '500ms' }}>
                         <SectionHeader title="Traffic Sources" colorClass="bg-blue-500" />
-                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                             <div className="h-80">
                                 <TrafficSourcePieChart data={trafficSourcesData} title="Traffic Distribution" />
                             </div>
@@ -287,7 +286,7 @@ export default function ChartsPage() {
                     {/* Devices */}
                     <section className="animate-slideUp" style={{ animationDelay: '600ms' }}>
                         <SectionHeader title="Device Breakdown" colorClass="bg-cyan-500" />
-                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                             <div className="h-80">
                                 <DeviceDoughnutChart data={devicesData} title="Device Usage" />
                             </div>
@@ -297,7 +296,7 @@ export default function ChartsPage() {
                     {/* Top Pages */}
                     <section className="animate-slideUp" style={{ animationDelay: '700ms' }}>
                         <SectionHeader title="Top Pages" colorClass="bg-purple-500" />
-                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                             <div className="h-80">
                                 <PerformanceBarChart data={topPagesData} title="Most Visited Pages" horizontal />
                             </div>

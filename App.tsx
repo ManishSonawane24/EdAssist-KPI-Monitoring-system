@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import DashboardPage from './pages/DashboardPage';
+import ChartsPage from './pages/ChartsPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import OAuthCallbackPage from './pages/OAuthCallbackPage';
@@ -38,6 +39,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/charts"
+            element={
+              <ProtectedRoute>
+                <ChartsPage />
               </ProtectedRoute>
             }
           />

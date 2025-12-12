@@ -31,29 +31,29 @@ export const MetricCard: React.FC<MetricCardProps> = ({ data, colorTheme = 'blue
   };
 
   return (
-    <div className={`group relative p-5 rounded-xl border border-slate-200 bg-white shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 ${getThemeClasses()}`}>
-      <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4 truncate pr-2">
+    <div className={`group relative p-5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 ${getThemeClasses()}`}>
+      <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-wider mb-4 truncate pr-2">
         {data.label}
       </h3>
       
       <div className="grid grid-cols-3 gap-2 divide-x divide-slate-100">
         <div className="text-center">
-          <p className="text-[10px] text-slate-400 font-medium uppercase mb-1">{labels?.today || 'Today'}</p>
-          <p className="text-lg font-bold text-slate-800 tracking-tight">{formatValue(data.today, data.isCurrency)}</p>
+          <p className="text-[10px] text-slate-400 dark:text-slate-300 font-medium uppercase mb-1">{labels?.today || 'Today'}</p>
+          <p className="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight">{formatValue(data.today, data.isCurrency)}</p>
         </div>
         <div className="text-center pl-2">
-          <p className="text-[10px] text-slate-400 font-medium uppercase mb-1">{labels?.mtd || 'MTD'}</p>
-          <p className="text-lg font-bold text-slate-800 tracking-tight">{formatValue(data.mtd, data.isCurrency)}</p>
+          <p className="text-[10px] text-slate-400 dark:text-slate-300 font-medium uppercase mb-1">{labels?.mtd || 'MTD'}</p>
+          <p className="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight">{formatValue(data.mtd, data.isCurrency)}</p>
         </div>
         <div className="text-center pl-2">
-          <p className="text-[10px] text-slate-400 font-medium uppercase mb-1">{labels?.ytd || 'YTD'}</p>
-          <p className="text-lg font-bold text-slate-800 tracking-tight">{formatValue(data.ytd, data.isCurrency)}</p>
+          <p className="text-[10px] text-slate-400 dark:text-slate-300 font-medium uppercase mb-1">{labels?.ytd || 'YTD'}</p>
+          <p className="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight">{formatValue(data.ytd, data.isCurrency)}</p>
         </div>
       </div>
       
       {data.notes && (
-        <div className="mt-4 pt-3 border-t border-slate-50">
-          <p className="text-xs text-slate-400 italic flex items-center gap-1">
+        <div className="mt-4 pt-3 border-t border-slate-50 dark:border-slate-700">
+          <p className="text-xs text-slate-400 dark:text-slate-300 italic flex items-center gap-1">
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

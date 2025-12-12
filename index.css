@@ -1,0 +1,17 @@
+/* Minimal global styles for theme transitions */
+:root {
+  --transition-speed: 200ms;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Ensure the fixed toggle sits above other UI */
+.theme-toggle {
+  z-index: 9999;
+}

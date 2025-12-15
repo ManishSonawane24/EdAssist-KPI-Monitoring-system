@@ -203,21 +203,25 @@ export default function ChartsPage() {
             <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="bg-gradient-to-tr from-brand-600 to-brand-400 text-white p-2 rounded-xl shadow-lg shadow-brand-200 dark:from-slate-700 dark:to-slate-600">
-                            <Logo bare className="text-white" />
-                        </div>
                         <div>
+                            <img alt="EdAssist logo" className='max-h-12 cursor-pointer' title='EdAssist logo' src='https://cdn.arthajobboard.com/public/image/EdassistLogo_11.png'/>
+                        </div>
+                        {/* <div>
                             <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
                                 EdAssist <span className="text-brand-600">Charts</span>
                             </h1>
                             <p className="text-xs text-slate-400 dark:text-slate-300 font-medium">Chart.js Visualizations</p>
-                        </div>
+                        </div> */}
                         <button
                             onClick={() => navigate('/')}
                             className="ml-4 px-4 py-2 text-sm font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all shadow-md hover:shadow-lg"
                         >
                             ← Dashboard
                         </button>
+                    </div>
+
+                    <div className=''>
+                        <h3 className="text-2xl font-bold text-slate-600 dark:text-slate-100 tracking-tight">Welcome To EdAssist Charts Section</h3>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -227,7 +231,7 @@ export default function ChartsPage() {
                         </div>
                         <button
                             onClick={handleLogout}
-                            className="px-4 py-2 text-sm font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 transition"
+                            className="px-4 py-2 text-sm font-semibold border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
                         >
                             Logout
                         </button>
@@ -321,7 +325,7 @@ export default function ChartsPage() {
                     {/* Conversion Funnel */}
                     <section className="animate-slideUp" style={{ animationDelay: '800ms' }}>
                         <SectionHeader title="Conversion Funnel" colorClass="bg-pink-500" />
-                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300">
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover transition-all duration-300">
                             <div className="h-80">
                                 <ConversionFunnelChart data={conversionFunnelData} title="User Journey" />
                             </div>

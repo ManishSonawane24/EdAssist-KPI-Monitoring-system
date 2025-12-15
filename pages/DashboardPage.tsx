@@ -316,22 +316,12 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans pb-24">
       <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-auto py-4 md:h-20 md:py-0 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 self-start md:self-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-auto py-4 md:h-20 md:py-0 flex flex-col md:flex-row items-center justify-between gap-1">
+          <div className="flex items-center gap-6 self-start md:self-auto">
             {/* Logo component handles dark/light variants and uses currentColor for inline SVG */}
-            <div className="bg-gradient-to-tr from-brand-600 to-brand-400 text-white p-2 rounded-xl shadow-lg shadow-brand-200 dark:from-slate-700 dark:to-slate-600">
-              <Logo bare className="text-white" />
-            </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">EdAssist <span className="text-brand-600">Analytics</span></h1>
-              <p className="text-xs text-slate-400 dark:text-slate-300 font-medium">KPI Monitoring System</p>
+              <img alt="EdAssist logo" className='max-h-12 cursor-pointer' title='EdAssist logo' src='https://cdn.arthajobboard.com/public/image/EdassistLogo_11.png'/>
             </div>
-            <button
-              onClick={() => navigate('/charts')}
-              className="ml-4 px-4 py-2 text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg"
-            >
-              View Charts
-            </button>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
@@ -341,7 +331,7 @@ export default function DashboardPage() {
                 name="start"
                 value={dateRange.start}
                 onChange={handleDateChange}
-                className="bg-white dark:bg-slate-700 text-xs text-slate-600 dark:text-slate-100 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400"
+                className="bg-white dark:bg-slate-700 text-xs text-slate-600 dark:text-slate-100 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400 hover:cursor-text"
               />
               <span className="text-slate-400 dark:text-slate-300 text-xs">to</span>
               <input
@@ -349,14 +339,15 @@ export default function DashboardPage() {
                 name="end"
                 value={dateRange.end}
                 onChange={handleDateChange}
-                className="bg-white dark:bg-slate-700 text-xs text-slate-600 dark:text-slate-100 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400"
+                className="bg-white dark:bg-slate-700 text-xs text-slate-600 dark:text-slate-100 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400 hover:cursor-text"
               />
             </div>
 
+            {/* Apply button */}
             <button
               onClick={loadData}
               disabled={loading}
-              className={`group relative px-5 py-2 bg-brand-600 border border-transparent text-white text-sm font-semibold rounded-lg hover:bg-brand-700 transition-all hover:shadow-md active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-[100px]`}
+              className={`group relative px-5 py-2 bg-brand-600 border border-transparent text-white text-sm font-semibold rounded-lg hover:bg-brand-800 transition-all hover:shadow-md active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]`}
             >
               {loading ? (
                 <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -370,11 +361,20 @@ export default function DashboardPage() {
               )}
             </button>
 
+            {/* View Charts button */}
+            <button
+              onClick={() => navigate('/charts')}
+              className="w-[120px] px-4 py-2 text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg"
+            >
+              View Charts
+            </button>
+
+            {/* Report button */}
             <div className="relative" ref={exportMenuRef}>
               <button
                 onClick={toggleExportMenu}
                 disabled={!data || loading || !!exportingFormat}
-                className="px-4 py-2 border border-indigo-100 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-[130px] h-[50px] px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-800 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-10 disabled:cursor-not-allowed"
               >
                 {exportingFormat ? (
                   <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -468,64 +468,108 @@ export default function DashboardPage() {
 
             <section className="animate-slideUp" style={{ animationDelay: '200ms' }}>
               <SectionHeader title="Job Portal Metrics" colorClass="bg-violet-500" />
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                <div className="xl:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 content-start">
-                  {data.jobPortalMetrics.map((metric, idx) => (
-                    <MetricCard key={idx} data={metric} colorTheme="violet" labels={colLabels} />
-                  ))}
+
+              <div className="mb-4 pb-4 xl:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 content-start">
+                {data.jobPortalMetrics.map((metric, idx) => (
+                  <MetricCard key={idx} data={metric} colorTheme="violet" labels={colLabels} />
+                ))}
+              </div>
+
+              {/* SIDE BY SIDE SECTION */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                {/* Top 5 Job Pages */}
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+                  <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2">
+                    Top 5 Job Pages
+                  </h3>
+
+                  <div className="space-y-4">
+                    {data.topJobPages && data.topJobPages.length > 0 ? (
+                      data.topJobPages.map((page, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between p-3 rounded-lg bg-violet-50 dark:bg-slate-700 hover:bg-white dark:hover:bg-slate-600 hover:shadow-sm border border-transparent hover:border-violet-100 transition-all cursor-default"
+                        >
+                          <div className="flex items-center gap-3 overflow-hidden">
+                            <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold bg-violet-200 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300">
+                              {i + 1}
+                            </span>
+                            <span
+                              className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate"
+                              title={page.pageName}
+                            >
+                              {page.pageName}
+                            </span>
+                          </div>
+                          <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                            {page.views.toLocaleString()}
+                            <span className="text-[10px] font-bold text-slate-800 dark:text-slate-400">
+                              {" "}views
+                            </span>
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-slate-500 dark:text-slate-400 text-sm italic">
+                        No specific job page data found.
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="space-y-6">
-                  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
-                    <h3 className="text-base font-bold text-slate-800 mb-6 flex items-center gap-2">
-                      Top 5 Job Pages
-                    </h3>
-                    <div className="space-y-4">
-                      {data.topJobPages && data.topJobPages.length > 0 ? (
-                        data.topJobPages.map((page, i) => (
-                          <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-violet-50 hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm border border-transparent hover:border-violet-100 transition-all cursor-default">
-                            <div className="flex items-center gap-3 overflow-hidden">
-                              <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold bg-violet-200 text-violet-700`}>
-                                {i + 1}
-                              </span>
-                              <span className="text-sm font-medium text-slate-700 dark:text-slate-100 truncate" title={page.pageName}>{page.pageName}</span>
-                            </div>
-                            <span className="text-sm font-bold text-slate-800 dark:text-slate-100">{page.views.toLocaleString()} <span className="text-[10px] font-normal text-slate-400 dark:text-slate-300">views</span></span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-slate-400 dark:text-slate-300 text-sm italic">No specific job page data found.</div>
-                      )}
-                    </div>
-                  </div>
+                {/* Page Views by Category */}
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                  <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-6 flex items-center gap-2">
+                    Page Views by Category
+                    {!isCustomDate && (
+                      <span className="px-2 py-0.5 bg-violet-50 text-violet-600 text-[10px] rounded-full uppercase">
+                        GA4 Data
+                      </span>
+                    )}
+                  </h3>
 
-                  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
-                    <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-6 flex items-center gap-2">
-                      Page Views by Category
-                      {!isCustomDate && <span className="px-2 py-0.5 bg-violet-50 text-violet-600 text-[10px] rounded-full uppercase">GA4 Data</span>}
-                    </h3>
-                    <div className="h-48 w-full">
-                      {data.pageViewsByCategory && data.pageViewsByCategory.length > 0 ? (
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={data.pageViewsByCategory}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                            <XAxis dataKey="name" axisLine={false} tickLine={false} fontSize={12} tick={{ fill: '#94a3b8' }} />
-                            <Tooltip
-                              cursor={{ fill: '#f8fafc' }}
-                              contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                              formatter={(value: number) => value.toLocaleString()}
-                            />
-                            <Bar dataKey="val" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={40} animationDuration={1500} isAnimationActive={true} />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      ) : (
-                        <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">No category data available</div>
-                      )}
-                    </div>
+                  <div className="h-48 w-full">
+                    {data.pageViewsByCategory && data.pageViewsByCategory.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={data.pageViewsByCategory}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9ff" />
+                          <XAxis
+                            dataKey="name"
+                            axisLine={false}
+                            tickLine={false}
+                            fontSize={12}
+                            tick={{ fill: '#94a3b8' }}
+                          />
+                          <Tooltip
+                            cursor={{ fill: '#f8fafc' }}
+                            contentStyle={{
+                              borderRadius: '8px',
+                              border: 'none',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                            }}
+                            formatter={(value: number) => value.toLocaleString()}
+                          />
+                          <Bar
+                            dataKey="val"
+                            fill="#8b5cf6"
+                            radius={[4, 4, 0, 0]}
+                            barSize={40}
+                            animationDuration={1500}
+                            isAnimationActive
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">
+                        No category data available
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            </section>
+          </section>
+
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
               <section className="animate-slideUp" style={{ animationDelay: '300ms' }}>
@@ -548,77 +592,136 @@ export default function DashboardPage() {
             </div>
 
             <section className="animate-slideUp" style={{ animationDelay: '500ms' }}>
-              <SectionHeader title="Website Performance (GA4)" colorClass="bg-indigo-500" />
+  <SectionHeader title="Website Performance (GA4)" colorClass="bg-indigo-500" />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
-                {data.websitePerformance.map((metric, idx) => (
-                  <MetricCard key={idx} data={metric} colorTheme="indigo" labels={colLabels} />
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+    {data.websitePerformance.map((metric, idx) => (
+      <MetricCard key={idx} data={metric} colorTheme="indigo" labels={colLabels} />
+    ))}
+  </div>
+
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    
+    {/* Traffic Sources */}
+    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+      <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2">
+        Traffic Sources
+        {isCustomDate && (
+          <span className="text-[10px] text-slate-400 dark:text-slate-300 font-normal ml-auto">
+            Selected Range
+          </span>
+        )}
+        {!isCustomDate && (
+          <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-[10px] rounded-full uppercase">
+            Real Data
+          </span>
+        )}
+      </h3>
+
+      <div className="h-64 w-full">
+        {data.trafficSources && data.trafficSources.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={data.trafficSources}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                paddingAngle={5}
+                dataKey="value"
+                animationDuration={1500}
+                animationBegin={200}
+                isAnimationActive
+              >
+                {data.trafficSources.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  borderRadius: '8px',
+                  border: 'none',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                }}
+              />
+              <Legend verticalAlign="bottom" height={36} iconType="circle" />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">
+            No traffic data available
+          </div>
+        )}
+      </div>
+    </div>
+
+    {/* Top 5 Website Pages */}
+    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+      <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2">
+        Top 5 Website Pages
+        {isCustomDate && (
+          <span className="text-[10px] text-slate-400 dark:text-slate-300 font-normal ml-auto">
+            Selected Range
+          </span>
+        )}
+        {!isCustomDate && (
+          <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-[10px] rounded-full uppercase">
+            Real Data
+          </span>
+        )}
+      </h3>
+
+      <div className="space-y-4">
+        {data.topPages && data.topPages.length > 0 ? (
+          data.topPages.map((page, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between p-3 rounded-lg
+                bg-slate-50 dark:bg-slate-700
+                hover:bg-white dark:hover:bg-slate-600
+                hover:shadow-sm border border-transparent
+                hover:border-slate-100 dark:hover:border-slate-600
+                transition-all cursor-default"
+            >
+              <div className="flex items-center gap-3 overflow-hidden">
+                <span
+                  className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
+                  ${
+                    i < 3
+                      ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
+                      : 'bg-slate-200 text-slate-600 dark:bg-slate-600 dark:text-slate-200'
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <span
+                  className="text-sm font-medium text-slate-700 dark:text-slate-100 truncate"
+                  title={page.pageName}
+                >
+                  {page.pageName}
+                </span>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
-                  <h3 className="text-base font-bold text-slate-800 mb-6 flex items-center gap-2">
-                    Traffic Sources
-                    {isCustomDate && <span className="text-[10px] text-slate-400 dark:text-slate-300 font-normal ml-auto">Selected Range</span>}
-                    {!isCustomDate && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] rounded-full uppercase">Real Data</span>}
-                  </h3>
-                  <div className="h-64 w-full">
-                    {data.trafficSources && data.trafficSources.length > 0 ? (
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={data.trafficSources}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            paddingAngle={5}
-                            dataKey="value"
-                            animationDuration={1500}
-                            animationBegin={200}
-                            isAnimationActive={true}
-                          >
-                            {data.trafficSources.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
-                          <Legend verticalAlign="bottom" height={36} iconType="circle" />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    ) : (
-                      <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">No traffic data available</div>
-                    )}
-                  </div>
-                </div>
+              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                {page.views.toLocaleString()}
+                <span className="text-[10px] font-normal text-slate-400 dark:text-slate-300">
+                  {" "}views
+                </span>
+              </span>
+            </div>
+          ))
+        ) : (
+          <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">
+            No page data available
+          </div>
+        )}
+      </div>
+    </div>
 
-                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
-                  <h3 className="text-base font-bold text-slate-800 mb-6 flex items-center gap-2">
-                    Top 5 Website Pages
-                    {isCustomDate && <span className="text-[10px] text-slate-400 dark:text-slate-300 font-normal ml-auto">Selected Range</span>}
-                    {!isCustomDate && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] rounded-full uppercase">Real Data</span>}
-                  </h3>
-                  <div className="space-y-4">
-                    {data.topPages && data.topPages.length > 0 ? (
-                      data.topPages.map((page, i) => (
-                        <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-100 transition-all cursor-default">
-                          <div className="flex items-center gap-3 overflow-hidden">
-                            <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${i < 3 ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-600'}`}>
-                              {i + 1}
-                            </span>
-                            <span className="text-sm font-medium text-slate-700 dark:text-slate-100 truncate" title={page.pageName}>{page.pageName}</span>
-                          </div>
-                          <span className="text-sm font-bold text-slate-800">{page.views.toLocaleString()} <span className="text-[10px] font-normal text-slate-400">views</span></span>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-300 text-sm">No page data available</div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </section>
+  </div>
+</section>
+
           </>
         )}
 

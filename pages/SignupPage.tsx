@@ -60,7 +60,7 @@ export default function SignupPage() {
               autoComplete="email"
               value={form.email}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-200"
+              className="mt-1 w-full px-4 py-2.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-200"
               required
             />
           </div>
@@ -72,7 +72,7 @@ export default function SignupPage() {
               name="password"
               value={form.password}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-200"
+              className="mt-1 w-full px-4 py-2.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-200"
               required
             />
           </div>
